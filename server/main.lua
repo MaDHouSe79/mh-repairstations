@@ -6,14 +6,18 @@ end
 
 QBCore.Functions.CreateCallback('qb-carfixstation:server:pay', function(source, cb, amount)
     if QBCore.Functions.GetPlayer(source).Functions.RemoveMoney("cash", amount, "repair-station") then
-	SocietyAccount(amount)
+	if state then
+	    SocietyAccount(amount)
+	end
 	cb({
 	    state   = true,
 	    message = Lang:t('company.cost_repair')
 	})
     else
 	if QBCore.Functions.GetPlayer(source).Functions.RemoveMoney("bank", amount, "repair-station") then
-	    SocietyAccount(amount)
+	    if state then
+	    	SocietyAccount(amount)
+	    end
 	    cb({
 		state   = true,
 		message = Lang:t('company.cost_repair')
