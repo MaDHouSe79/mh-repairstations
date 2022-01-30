@@ -11,7 +11,7 @@ QBCore.Functions.CreateCallback('qb-carfixstation:server:pay', function(source, 
 	end
 	cb({
 	    state   = true,
-	    message = Lang:t('company.cost_repair')
+	    message = Lang:t('company.cost_repair', {amount})
 	})
     else
 	if QBCore.Functions.GetPlayer(source).Functions.RemoveMoney("bank", amount, "repair-station") then
@@ -20,7 +20,7 @@ QBCore.Functions.CreateCallback('qb-carfixstation:server:pay', function(source, 
 	    end
 	    cb({
 		state   = true,
-		message = Lang:t('company.cost_repair')
+		message = Lang:t('company.cost_repair', {amount})
 	    })
 	else
 	    cb({
