@@ -21,9 +21,3 @@ Enjoy 👊😁👍
 
 ## 🎮 How To Use?
 - 👉 Look at your map for 🔧 and go to one of the locations, if you in the repair station zone press [E].
-
-
-## ⚙️ Config Settings
-- change show blips on the map
-- change the repair button to press
-- change the blip sprite
