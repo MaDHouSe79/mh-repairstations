@@ -9,7 +9,7 @@ local Translations = {
     company = {
 		['name']                = "Car Repair Station",
 		['not_enough_money']    = 'You don\'t have enough cash',
-		['cost_repair']         = 'You spent €{amount} to repair vehicle',
+		['cost_repair']         = 'You spent €%{amount} to repair vehicle',
 	},
 
 	info = {
