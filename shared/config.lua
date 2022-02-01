@@ -1,4 +1,7 @@
 Config                   = {}
+
+Config.CheckForUpdates   = true        -- To keep qb-repairstations updated.
+
 Config.SocietyAccount    = 'mechanic'  -- Society account job name
 Config.UseSocietyAccount = true        -- if you want to use Society Account
 

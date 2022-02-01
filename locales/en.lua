@@ -1,7 +1,7 @@
 local Translations = {
     system = {
-       		['repaired']            = "Vehicle has been repaired",
-        	['press_repair_free']   = 'Press ~INPUT_PICKUP~ to repair vehicle for free',
+       	['repaired']            = "Vehicle has been repaired",
+        ['press_repair_free']   = 'Press ~INPUT_PICKUP~ to repair vehicle for free',
 		['repair_finish']       = 'Vehicle has been repaired!',
 		['repair_processing']   = 'Repair in progress, please wait...',
     },

@@ -1,3 +1,7 @@
+if Config.CheckForUpdates then
+	TriggerServerEvent("qb-repairstations:server:CheckVersion")
+end
+
 function hintToDisplay(text)
     SetTextComponentFormat("STRING")
     AddTextComponentString(text)
