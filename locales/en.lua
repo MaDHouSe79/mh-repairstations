@@ -10,6 +10,7 @@ local Translations = {
 		['name']                = "Car Repair Station",
 		['not_enough_money']    = 'You don\'t have enough cash',
 		['cost_repair']         = 'You spent €%{amount} to repair vehicle',
+		['done_repair']         = 'Your vehicle has been repaired',
 	},
 
 	info = {
@@ -22,3 +23,4 @@ Lang = Locale:new({
     phrases = Translations,
     warnOnMissing = true
 })
+
