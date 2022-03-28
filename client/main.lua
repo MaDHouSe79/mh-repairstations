@@ -15,7 +15,7 @@ Citizen.CreateThread(function()
 								hintToDisplay(Lang:t('info.press_repair_free'))
 								if IsControlJustPressed(0, Config.RepairButton) then
 									TriggerEvent('qb-repairstations:client:fixCar', Config.Stations[k].repairTime)
-									QBCore.Functions.Notify(cb.message, "primary",  Config.Stations[k].repairTime)						
+									QBCore.Functions.Notify(Lang:t('company.done_repair'), "primary",  Config.Stations[k].repairTime)						
 									SetPedCoordsKeepVehicle(playerPed, v.x, v.y, v.z)
 								end								
 							else
