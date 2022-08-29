@@ -14,7 +14,7 @@ Enjoy 👊😁👍
 
 
 ## ⚙️ How To Install
-- 👉 Put qb-repairstations in to the directory -> resources/[qb] 
+- 👉 Put mh-repairstations in to the directory -> resources/[qb] 
 - 👉 Restart your server.
 - 👉 Enjoy 👊😁👍
 
