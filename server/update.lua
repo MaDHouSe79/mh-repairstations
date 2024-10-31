@@ -1,35 +1,21 @@
-if Config.CheckForUpdates then
-    Citizen.CreateThread( function()
-        updatePath = "/MaDHouSe79/qb-repairstations"
-        resourceName = "("..GetCurrentResourceName()..")"
-        PerformHttpRequest("https://raw.githubusercontent.com"..updatePath.."/master/version", checkVersion, "GET")
-    end)
-end
+local script = GetCurrentResourceName()
+local url = "https://raw.githubusercontent.com" .. "/MaDHouSe79/" .. script .. "/master/version"
+local version = GetResourceMetadata(script, "version")
 
-RegisterServerEvent("qb-repairstations:server:CheckVersion", function()
-    if updateavail then
-        TriggerClientEvent("qb-repairstations:client:Update", source, true)
-    else
-        TriggerClientEvent("qb-repairstations:client:Update", source, false)
-    end
+CreateThread(function()
+    PerformHttpRequest(url, function(err, text, headers)
+        if (text ~= nil) then
+            version = string.gsub(version, "%s+", "")
+            text = string.gsub(text, "%s+", "")
+            if version == text then
+                print("^0[^4Update Check^0: ^1"..script.."^0] - Current Version: ^2 "..version.."^0] [Github Version:^2 "..text.."^0] [Status:^2Ok^0] ")
+            elseif version < text then
+                print("^0[^4Update Check^0: ^1"..script.."^0] - Newer version of "..script.." found [Installed:^1 "..version.."^0] [New:^2 "..text.."^0]")
+            elseif version > text then
+                print("^0[^4Update Check^0: ^1"..script.."^0] - You somehow skipped a few versions of "..script.." or the github went offline, if it's still online i advise you to update ( or downgrade? )")
+            end
+        else
+            print("[^6" .. script .. "^0] Check for script update ^1FAILED^0, unable to find the host.")
+        end
+    end, "GET", "", "")
 end)
-
-function checkVersion(err, responseText, headers)
-    curVersion = LoadResourceFile(GetCurrentResourceName(), "version")
-    if responseText == nil then
-        print("^1"..resourceName.." check for updates failed ^7")
-        return
-    end
-    if curVersion ~= responseText and tonumber(curVersion) < tonumber(responseText) then
-        updateavail = true
-        print("\n^1----------------------------------------------------------------------------------^7")
-        print(resourceName.." is outdated, latest version is: ^2"..responseText.."^7, installed version: ^1"..curVersion.."^7!\nupdate from https://github.com"..updatePath.."")
-        print("^1----------------------------------------------------------------------------------^7")
-    elseif tonumber(curVersion) > tonumber(responseText) then
-        print("\n^3----------------------------------------------------------------------------------^7")
-        print(resourceName.." git version is: ^2"..responseText.."^7, installed version: ^1"..curVersion.."^7!")
-        print("^3----------------------------------------------------------------------------------^7")
-    else
-        print("\n"..resourceName.." is up to date. (^2"..curVersion.."^7)")
-    end
-end
