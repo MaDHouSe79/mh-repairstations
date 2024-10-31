@@ -18,8 +18,8 @@ client_script {
 }
 
 server_script {
-    'server/update.lua',
     'server/main.lua',
+    'server/update.lua',
 }
 
 lua54 'yes'
