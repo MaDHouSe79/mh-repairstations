@@ -1,25 +1,19 @@
 fx_version 'cerulean'
 game 'gta5'
 
-description 'QB-Repairstations'
-version '1.0.0'
+description 'MH-Repairstations'
+repository 'https://github.com/MaDHouSe79/mh-repairstations'
+version '1.0.1'
 
 shared_scripts {
-    '@qb-core/shared/locale.lua',
+    '@ox_lib/init.lua',
+    'shared/locale.lua',
     'locales/en.lua', -- change en to your language
     'shared/config.lua',
-    'shared/variables.lua',
 }
 
-client_script {
-    'client/functions.lua',
-    'client/events.lua',
-    'client/main.lua',
-}
-
-server_script {
-    'server/main.lua',
-    'server/update.lua',
-}
+client_scripts {'client/main.lua'}
+server_scripts {'server/main.lua', 'server/update.lua'}
+dependencies {'ox_lib'}
 
 lua54 'yes'

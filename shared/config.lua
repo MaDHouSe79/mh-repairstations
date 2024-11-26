@@ -1,27 +1,48 @@
-Config                   = {}
+Config = {}
 
-Config.CheckForUpdates   = true        -- To keep qb-repairstations updated.
+Config.NotifyScript = "ox_lib" -- default ox_lib or use k5_notify/okokNotify/Roda_Notifications
 
-Config.SocietyAccount    = 'mechanic'  -- Society account job name
-Config.UseSocietyAccount = true        -- if you want to use Society Account
-
-Config.EnableSoundEffect = false       -- if you want to use sound effects (you need the interact-sound mod for this: https://github.com/qbcore-framework/interact-sound)
-Config.RepairButton      = 38          -- E - To change go to: https://docs.fivem.net/docs/game-references/controls/
-
-Config.Blips             = true        -- to display blibs on ypur map
-Config.BlipSprite        = 402         -- To change go to: https://docs.fivem.net/docs/game-references/blips/
-Config.BlipDisplay       = 4           
-Config.BlipScale         = 0.8
-Config.BlipColour        = 47          -- To change go to: https://docs.fivem.net/docs/game-references/blips/ (scroll down)
-Config.BlipAsShortRange  = true 
-
-Config.Stations          = {           -- if you want repair for free, set cost to false
-    { x = -36.52,   y = -1088.55, z = 26.02, cost = 1500,  repairTime = 5000 },
-    { x = -211.15,  y = -1323.98, z = 30.49, cost = 1500,  repairTime = 5000 },
-    { x = 1028.67,  y = -2299.63, z = 30.51, cost = 1500,  repairTime = 5000 },
-    { x = -1021.36, y = -3485.06, z = 13.44, cost = false, repairTime = 5000 },
-    { x = 1234.26,  y = 344.1,    z = 81.29, cost = false, repairTime = 5000 },
-    { x = 447.24,   y = -992.39,  z = 25.73, cost = false, repairTime = 5000 },
-    { x = -370.26,  y = -107.92,  z = 38.27, cost = 1500,  repairTime = 5000 },
-    { x = -83.45,   y = 80.48,    z = 71.12, cost = 1500,  repairTime = 5000 },
+-- if you want repair for free, set cost to false
+Config.Stations = {
+    {
+        cost = 1500,
+        repairTime = 5000,
+        coords = vector3(-36.52, -1088.55, 26.02),
+        blip = {enable = true, sprite = 402, display = 4, scale = 0.8, colour = 47}
+    }, {
+        cost = 1500,
+        repairTime = 5000,
+        coords = vector3(-211.15, -1323.98, 30.49),
+        blip = {enable = true, sprite = 402, display = 4, scale = 0.8, colour = 47}
+    }, {
+        cost = 1500,
+        repairTime = 5000,
+        coords = vector3(1028.67, -2299.63, 30.51),
+        blip = {enable = true, sprite = 402, display = 4, scale = 0.8, colour = 47}
+    }, {
+        cost = false,
+        repairTime = 5000,
+        coords = vector3(-1021.36, -3485.06, 13.44),
+        blip = {enable = true, sprite = 402, display = 4, scale = 0.8, colour = 47}
+    }, {
+        cost = false,
+        repairTime = 5000,
+        coords = vector3(1234.26, 344.1, 81.29),
+        blip = {enable = true, sprite = 402, display = 4, scale = 0.8, colour = 47}
+    }, {
+        cost = false,
+        repairTime = 5000,
+        coords = vector3(447.24, -992.39, 25.73),
+        blip = {enable = true, sprite = 402, display = 4, scale = 0.8, colour = 47}
+    }, {
+        cost = 1500,
+        repairTime = 5000,
+        coords = vector3(-370.26, -107.92, 38.27),
+        blip = {enable = true, sprite = 402, display = 4, scale = 0.8, colour = 47}
+    }, {
+        cost = 1500,
+        repairTime = 5000,
+        coords = vector3(-83.45, 80.48, 71.12),
+        blip = {enable = true, sprite = 402, display = 4, scale = 0.8, colour = 47}
+    }
 }

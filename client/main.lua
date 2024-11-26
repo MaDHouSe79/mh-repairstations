@@ -1,51 +1,140 @@
-Citizen.CreateThread(function()	
-    while true do
-		Citizen.Wait(5)	
-		local playerPed = GetPlayerPed(-1)
-		local pos       = GetEntityCoords(playerPed, true)		
-		for k,v in pairs(Config.Stations) do
-			if not fixing then
-				if (Vdist(pos.x, pos.y, pos.z, v.x, v.y, v.z) < 100) then
-					if IsPedInAnyVehicle(playerPed, false) then
-						DrawMarker(36, v.x, v.y, v.z+1.1, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 2.0, 5.0, 1.0, 255, 0, 0, 100, true, true, 2, true, false, false, false)
-						DrawMarker(0, v.x, v.y, v.z-0.4, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 5.0, 5.0, 1.0, 255, 255, 0, 100, false, false, 2, false, false, false, false)
-						if (Vdist(pos.x, pos.y, pos.z, v.x, v.y, v.z) < 2.5) then							
-							position = k
-							if v.cost == false then
-								hintToDisplay(Lang:t('info.press_repair_free'))
-								if IsControlJustPressed(0, Config.RepairButton) then
-									TriggerEvent('qb-repairstations:client:fixCar', Config.Stations[k].repairTime)
-									QBCore.Functions.Notify(Lang:t('company.done_repair'), "primary",  Config.Stations[k].repairTime)						
-									SetPedCoordsKeepVehicle(playerPed, v.x, v.y, v.z)
-								end								
-							else
-								hintToDisplay(Lang:t('info.press_repair_cost', {amount = v.cost}))
-								if IsControlJustPressed(0, Config.RepairButton) then
-									QBCore.Functions.TriggerCallback("qb-repairstations:server:pay", function(cb)
-										if cb.state then
-											SetPedCoordsKeepVehicle(playerPed, v.x, v.y, v.z)
-											TriggerEvent('qb-repairstations:client:fixCar', Config.Stations[k].repairTime)		
-											QBCore.Functions.Notify(cb.message, "primary",  Config.Stations[k].repairTime)
-										else
-											SetPedCoordsKeepVehicle(playerPed, v.x, v.y, v.z)
-										end
-									end, v.cost)
-								end																
-							end
-						end
-					end
-				end
-			else		
-				if position == k then
-					DrawMarker(27, v.x, v.y, v.z + zcoords+0.6, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 5.0, 5.0, 1.0, 255, 0+mcolor, 0, 255, false, false, 2, true, false, false, false)
-					DrawMarker(23, v.x, v.y, v.z + zcoords, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 5.0, 5.0, 1.0, 255, 0+mcolor, 0, 255, false, false, 2, true, false, false, false)
-					DrawMarker(27, v.x, v.y, v.z + zcoords-0.6, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 5.0, 5.0, 1.0, 255, 0+mcolor, 0, 255, false, false, 2, true, false, false, false)
-				else
-					DrawMarker(36, v.x, v.y, v.z+1.1, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 2.0, 5.0, 1.0, 255, 0, 0, 100, true, true, 2, true, false, false, false)
-					DrawMarker(0, v.x, v.y, v.z-0.4, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 5.0, 5.0, 1.0, 255, 255, 0, 100, false, false, 2, false, false, false, false)							
-				end
-           end
+local QBCore, isLoggedIn = exports['qb-core']:GetCoreObject(), false
+local zcoords, mcolor, turn, fixing, pressed, blips = 0.0, 0, false, false, false, {}
+
+local function HintToDisplay(text)
+    SetTextComponentFormat("STRING")
+    AddTextComponentString(text)
+    DisplayHelpTextFromStringLabel(0, 0, 1, -1)
+end
+
+local function Notify(message, type, length)
+    if Config.NotifyScript == "ox_lib" and GetResourceState(Config.NotifyScript) ~= 'missing' then
+        lib.notify({title = "MH Repair Stations", description = message, type = type})
+    elseif Config.NotifyScript == "k5_notify" and GetResourceState(Config.NotifyScript) ~= 'missing' then
+        exports["k5_notify"]:notify("MH Repair Stations", message, "k5style", length)
+    elseif Config.NotifyScript == "okokNotify" and GetResourceState(Config.NotifyScript) ~= 'missing' then
+        exports['okokNotify']:Alert("MH Repair Stations", message, length, type)
+    elseif Config.NotifyScript == "Roda_Notifications" and GetResourceState(Config.NotifyScript) ~= 'missing' then
+        exports['Roda_Notifications']:showNotify("MH Repair Stations", message, type, length)
+    end
+end
+
+local function DeteteBlips()
+    for k, blip in pairs(blips) do
+        if DoesBlipExist(blip) then
+            RemoveBlip(blip)
         end
+    end
+    blips = {}
+end
+
+local function CreateBlips()
+    for i = 1, #Config.Stations, 1 do
+        local blip = AddBlipForCoord(Config.Stations[i].coords.x, Config.Stations[i].coords.y, Config.Stations[i].coords.z)
+        SetBlipSprite(blip, Config.Stations[i].blip.sprite)
+        SetBlipDisplay(blip, Config.Stations[i].blip.display)
+        SetBlipScale(blip, Config.Stations[i].blip.scale)
+        SetBlipColour(blip, Config.Stations[i].blip.colour)
+        SetBlipAsShortRange(blip, true)
+        BeginTextCommandSetBlipName("STRING")
+        AddTextComponentSubstringPlayerName(Lang:t('company.name'))
+        EndTextCommandSetBlipName(blip)
+        blips[#blips + 1] = blip
+    end
+end
+
+local function GetDistance(pos1, pos2)
+    return #(vector3(pos1.x, pos1.y, pos1.z) - vector3(pos2.x, pos2.y, pos2.z))
+end
+
+local function RepairVehicle(target, repairTime)
+    fixing = true
+    FreezeEntityPosition(target, true)
+    Notify(Lang:t('info.repair_processing'), 'primary', repairTime)
+    TriggerServerEvent('InteractSound_SV:PlayWithinDistance', 5.0, 'car_repair', 0.7)
+    if lib.progressCircle({duration = repairTime, position = 'bottom', useWhileDead = false, canCancel = false, disable = {car = true}}) then
+        SetVehicleFixed(target)
+        SetVehicleEngineHealth(target, 1000.0)
+        SetVehicleBodyHealth(target, 1000.0)
+        SetVehiclePetrolTankHealth(target, 1000.0)
+        SetVehicleDirtLevel(target, 0)
+        SetVehicleOnGroundProperly(target)
+        FreezeEntityPosition(target, false)
+        zcoords, mcolor, turn, fixing = 0.0, 0, false, false
+    else
+        zcoords, mcolor, turn, fixing = 0.0, 0, false, false
+    end
+end
+
+AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
+    CreateBlips()
+    isLoggedIn = true
+end)
+
+AddEventHandler('QBCore:Client:OnPlayerUnload', function()
+    DeteteBlips()
+    isLoggedIn = false
+    lib.hideTextUI()
+end)
+
+AddEventHandler('onResourceStart', function(resource)
+    if resource == GetCurrentResourceName() then
+        CreateBlips()
+        isLoggedIn = true
+        lib.hideTextUI()
     end
 end)
 
+AddEventHandler('onResourceStop', function(resource)
+    if resource == GetCurrentResourceName() then
+        DeteteBlips()
+        isLoggedIn = false
+        lib.hideTextUI()
+    end
+end)
+
+CreateThread(function()
+    while true do
+        local sleep = 10
+        if isLoggedIn then            
+            if IsPedInAnyVehicle(PlayerPedId(), false) then
+                for k, v in pairs(Config.Stations) do
+                    local pos = GetEntityCoords(PlayerPedId(), true)
+                    local coords = vector3(v.coords.x, v.coords.y, v.coords.z)
+                    if not fixing then
+                        if (GetDistance(pos, coords) < 100) then
+                            if (GetDistance(pos, coords) < 2.5) then
+                                if not v.cost then
+                                    if not pressed then lib.showTextUI(Lang:t('info.press_repair_free')) else lib.hideTextUI() end
+                                    if IsControlJustPressed(0, 38) then
+                                        pressed = true
+                                        SetPedCoordsKeepVehicle(PlayerPedId(), coords.x, coords.y, coords.z)
+                                        RepairVehicle(GetVehiclePedIsIn(PlayerPedId(), false), v.repairTime)
+                                        Notify(Lang:t('company.done_repair'), "primary", v.repairTime)
+                                    end
+                                elseif v.cost then
+                                    if not pressed then lib.showTextUI(Lang:t('info.press_repair_cost', {amount = v.cost})) else lib.hideTextUI() end
+                                    if IsControlJustPressed(0, 38) then
+                                        pressed = true
+                                        QBCore.Functions.TriggerCallback("qb-repairstations:server:pay", function(cb)
+                                            if cb.state then
+                                                SetPedCoordsKeepVehicle(PlayerPedId(), coords.x, coords.y, coords.z)
+                                                RepairVehicle(GetVehiclePedIsIn(PlayerPedId(), false), v.repairTime)
+                                                Notify(cb.message, "primary", v.repairTime)
+                                            else
+                                                SetPedCoordsKeepVehicle(PlayerPedId(), coords.x, coords.y, coords.z)
+                                            end
+                                        end, v.cost)
+                                    end
+                                end
+                            elseif (GetDistance(pos, coords) > 2.5) then
+                                pressed = false
+                            end
+                        end
+                    end
+                end
+            end
+        end
+        Wait(sleep)
+    end
+end)
