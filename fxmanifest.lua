@@ -3,7 +3,7 @@ game 'gta5'
 
 description 'MH-Repairstations'
 repository 'https://github.com/MaDHouSe79/mh-repairstations'
-version '1.0.1'
+version '1.0.0'
 
 shared_scripts {
     '@ox_lib/init.lua',
