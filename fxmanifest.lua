@@ -14,6 +14,6 @@ shared_scripts {
 
 client_scripts {'client/main.lua'}
 server_scripts {'server/main.lua', 'server/update.lua'}
-dependencies {'ox_lib'}
+dependencies {'mh-core', 'ox_lib'}
 
 lua54 'yes'
