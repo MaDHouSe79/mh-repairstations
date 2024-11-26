@@ -1,5 +1,5 @@
 local QBCore, isLoggedIn = exports['qb-core']:GetCoreObject(), false
-local zcoords, mcolor, turn, fixing, pressed, blips = 0.0, 0, false, false, false, {}
+local fixing, pressed, blips = false, false, {}
 
 local function HintToDisplay(text)
     SetTextComponentFormat("STRING")
@@ -60,9 +60,9 @@ local function RepairVehicle(target, repairTime)
         SetVehicleDirtLevel(target, 0)
         SetVehicleOnGroundProperly(target)
         FreezeEntityPosition(target, false)
-        zcoords, mcolor, turn, fixing = 0.0, 0, false, false
+        fixing = false
     else
-        zcoords, mcolor, turn, fixing = 0.0, 0, false, false
+        fixing = false
     end
 end
 
@@ -95,14 +95,16 @@ end)
 
 CreateThread(function()
     while true do
-        local sleep = 10
+        local sleep = 1000
         if isLoggedIn then            
             if IsPedInAnyVehicle(PlayerPedId(), false) then
+                sleep = 500
                 for k, v in pairs(Config.Stations) do
                     local pos = GetEntityCoords(PlayerPedId(), true)
                     local coords = vector3(v.coords.x, v.coords.y, v.coords.z)
                     if not fixing then
                         if (GetDistance(pos, coords) < 100) then
+                            sleep = 10
                             if (GetDistance(pos, coords) < 2.5) then
                                 if not v.cost then
                                     if not pressed then lib.showTextUI(Lang:t('info.press_repair_free')) else lib.hideTextUI() end
