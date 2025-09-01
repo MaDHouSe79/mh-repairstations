@@ -19,6 +19,10 @@
     </a>      
 </p>
 
+<p align="center">
+    <img src="https://komarev.com/ghpvc/?username=MaDHouSe79&label=Profile%20views&color=3464eb&style=for-the-badge&logo=star&abbreviated=true" alt="MaDHouSe79" style="padding-right:20px;" />
+</p>
+
 # MH Repair Stations
 - This is a very awesome Repair Stations mod, for [qb-core](https://github.com/qbcore-framework/qb-core), 
 - a converted version of esx_repairstations, and now also available on [qb-core](https://github.com/qbcore-framework/)
